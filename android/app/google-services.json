@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "134210412744",
+    "project_id": "ellelife-5dc60",
+    "storage_bucket": "ellelife-5dc60.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134210412744:android:7e3fb42f405aff576005fd",
+        "android_client_info": {
+          "package_name": "com.example.ellelife"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQnfzWqkcBLWIKUQIm644rmPWxAZwxf9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

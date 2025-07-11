@@ -1,0 +1,76 @@
+import 'package:ellelife/core/Widgets/wrapper.dart';
+import 'package:ellelife/core/auth/presentation/login.dart';
+import 'package:ellelife/src/user/presentation/screens/register.dart';
+import 'package:ellelife/core/navigation/navigation_screen.dart';
+import 'package:ellelife/core/navigation/route_names.dart';
+import 'package:ellelife/src/feed/presentation/screens/create_post.dart';
+import 'package:ellelife/src/feed/presentation/screens/home_screen.dart';
+import 'package:ellelife/src/user/presentation/screens/profile_page.dart';
+import 'package:ellelife/src/user/presentation/screens/search.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+final rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+final router = GoRouter(
+  initialLocation: "/",
+  debugLogDiagnostics: true,
+  navigatorKey: rootNavigatorKey,
+  errorPageBuilder: (context, state) {
+    return const MaterialPage<dynamic>(
+      child: Scaffold(body: Center(child: Text("this page is not found!!"))),
+    );
+  },
+  routes: [
+    GoRoute(
+      path: "/",
+      name: RouteNames.wrapper,
+      builder: (context, state) {
+        return Wrapper();
+      },
+    ),
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (context, state, child) {
+        return NavigationScreen(state: state, child: child);
+      },
+      routes: [
+        GoRoute(
+          path: "/home",
+          name: RouteNames.home,
+          builder: (context, state) => const HomeScreen(),
+        ),
+        GoRoute(
+          name: "/create",
+          path: RouteNames.createPost,
+          builder: (context, state) => CreatePost(),
+        ),
+        GoRoute(
+          name: "/search",
+          path: RouteNames.search,
+          builder: (context, state) => const SearchPage(),
+        ),
+        GoRoute(
+          name: "/profile",
+          path: RouteNames.profile,
+          builder: (context, state) => const ProfilePage(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: "/register",
+      name: RouteNames.register,
+      builder: (context, state) {
+        return RegisterPage();
+      },
+    ),
+    GoRoute(
+      path: "/login",
+      name: RouteNames.login,
+      builder: (context, state) {
+        return LoginPage();
+      },
+    ),
+  ],
+);

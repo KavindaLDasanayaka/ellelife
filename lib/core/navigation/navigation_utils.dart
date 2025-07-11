@@ -1,0 +1,31 @@
+import 'package:ellelife/core/navigation/route_names.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ming_cute_icons/ming_cute_icons.dart';
+
+abstract class NavigationUtils {
+  static final icons = [
+    (MingCuteIcons.mgc_home_3_line, MingCuteIcons.mgc_home_3_fill, "Home"),
+    (
+      MingCuteIcons.mgc_add_circle_line,
+      MingCuteIcons.mgc_add_circle_fill,
+      "Add Post",
+    ),
+
+    (
+      MingCuteIcons.mgc_search_2_line,
+      MingCuteIcons.mgc_search_2_fill,
+      "Search",
+    ),
+    (MingCuteIcons.mgc_user_5_line, MingCuteIcons.mgc_user_5_fill, "Profile"),
+  ];
+
+  static int activeIndex(GoRouterState state) {
+    return switch (state.fullPath) {
+      RouteNames.home => 0,
+      RouteNames.createPost => 1,
+      RouteNames.search => 2,
+      RouteNames.profile => 3,
+      _ => 0,
+    };
+  }
+}
