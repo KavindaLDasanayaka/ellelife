@@ -33,7 +33,7 @@ class NavigationScreen extends StatelessWidget {
             case 1:
               context.go(RouteNames.createPost);
             case 2:
-              context.go(RouteNames.search);
+              context.go(RouteNames.teams);
             case 3:
               context.go(RouteNames.profile);
           }

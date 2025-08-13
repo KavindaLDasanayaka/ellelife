@@ -2,6 +2,9 @@ import 'package:ellelife/core/auth/presentation/bloc/user_login_bloc.dart';
 import 'package:ellelife/core/navigation/router.dart';
 import 'package:ellelife/firebase_options.dart';
 import 'package:ellelife/src/feed/presentation/bloc/post_create_bloc.dart';
+import 'package:ellelife/src/feed/presentation/bloc/postedit_bloc.dart';
+import 'package:ellelife/src/teams/presentation/bloc/team_register_bloc.dart';
+import 'package:ellelife/src/teams/presentation/bloc/teams_bloc.dart';
 import 'package:ellelife/src/user/presentation/bloc/user_register_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +23,9 @@ void main() async {
         BlocProvider(create: (context) => UserLoginBloc()),
         BlocProvider(create: (context) => UserRegisterBloc()),
         BlocProvider(create: (context) => PostCreateBloc()),
+        BlocProvider(create: (context) => TeamsBloc()),
+        BlocProvider(create: (context) => TeamRegisterBloc()),
+        BlocProvider(create: (context) => PosteditBloc()),
       ],
       child: const MyApp(),
     ),

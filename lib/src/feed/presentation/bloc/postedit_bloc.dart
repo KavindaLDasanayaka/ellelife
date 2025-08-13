@@ -8,29 +8,16 @@ import 'package:ellelife/src/user/data/user_repos_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'post_create_event.dart';
-part 'post_create_state.dart';
+part 'postedit_event.dart';
+part 'postedit_state.dart';
 
-class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
-  PostCreateBloc() : super(PostCreateInitial(mood: Mood.happy, null)) {
-    on<PostCreatingEvent>(_postCreating);
-    on<PostInitEvent>((event, emit) {
-      emit(PostCreateInitial(mood: Mood.happy, null));
-    });
-    on<MoodSelection>((event, emit) {
-      emit(PostCreateInitial(mood: event.mood, event.file));
-    });
-    on<ImageSelectEvent>((event, emit) {
-      emit(PostCreateInitial(mood: event.mood, event.file));
-    });
+class PosteditBloc extends Bloc<PosteditEvent, PosteditState> {
+  PosteditBloc() : super(PosteditInitial()) {
+    on<UpdatePost>(_updatePost);
   }
 
-  Future<void> _postCreating(
-    final PostCreatingEvent event,
-    final Emitter emit,
-  ) async {
-    emit(PostCreateLoading());
-
+  Future<void> _updatePost(UpdatePost event, Emitter emit) async {
+    emit(PosteditSavingState());
     try {
       String? imageUrl0;
       if (event.file != null) {
@@ -51,15 +38,15 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
             userId: userDetails.userId,
             username: userDetails.name,
             likes: 0,
-            postId: "",
+            postId: event.postId,
             datePublished: DateTime.now(),
             postImage: imageUrl0!,
             profImage: userDetails.imageUrl,
           );
 
-          await PostRepoImpl().savePost(post);
+          await PostRepoImpl().updatePost(post);
 
-          emit(PostCreated());
+          emit(PostEditedState(post: post));
         }
       }
     } catch (err) {

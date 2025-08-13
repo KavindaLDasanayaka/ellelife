@@ -4,22 +4,25 @@ import 'package:ellelife/core/Widgets/Custom_text_Input_field.dart';
 import 'package:ellelife/core/Widgets/custom_button.dart';
 import 'package:ellelife/core/utils/colors.dart';
 import 'package:ellelife/core/utils/mood.dart';
+import 'package:ellelife/src/feed/domain/entities/post.dart';
 
 import 'package:ellelife/src/feed/presentation/bloc/post_create_bloc.dart';
+import 'package:ellelife/src/feed/presentation/bloc/postedit_bloc.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CreatePost extends StatefulWidget {
-  const CreatePost({super.key});
+class EditPostPage extends StatefulWidget {
+  final Post postFromSelection;
+  const EditPostPage({super.key, required this.postFromSelection});
 
   @override
-  State<CreatePost> createState() => _CreatePostState();
+  State<EditPostPage> createState() => _EditPostPageState();
 }
 
-class _CreatePostState extends State<CreatePost> {
+class _EditPostPageState extends State<EditPostPage> {
   final TextEditingController _captionController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -35,12 +38,13 @@ class _CreatePostState extends State<CreatePost> {
     }
   }
 
-  Future<void> _savePost(File? imageFile, Mood mood) async {
-    BlocProvider.of<PostCreateBloc>(context).add(
-      PostCreatingEvent(
+  Future<void> _updatePost(File? imageFile, Mood mood, String postId) async {
+    BlocProvider.of<PosteditBloc>(context).add(
+      UpdatePost(
         caption: _captionController.text,
         mood: mood,
         imageFile,
+        postId: postId,
       ),
     );
     _captionController.clear();
@@ -62,7 +66,7 @@ class _CreatePostState extends State<CreatePost> {
               }
             },
             builder: (context, state) {
-              if (state is PostCreateLoading) {
+              if (state is PosteditSavingState) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (state is PostCreateInitial) {
@@ -146,7 +150,11 @@ class _CreatePostState extends State<CreatePost> {
                         buttonTextColor: mainWhite,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            _savePost(state.imageFile, state.mood);
+                            _updatePost(
+                              state.imageFile,
+                              state.mood,
+                              widget.postFromSelection.postId,
+                            );
                           }
                         },
                       ),

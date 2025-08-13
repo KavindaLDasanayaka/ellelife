@@ -5,4 +5,5 @@ abstract class UserRepos {
   Future<void> deleteUser(String userId);
   Future<void> updateUser(String userId);
   Future<UserModel?> getUserById(String userId);
+  Future<List<UserModel?>> getAllusers();
 }

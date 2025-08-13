@@ -143,4 +143,15 @@ class PostRepoImpl extends PostRepo {
       print("Saving post error: $err");
     }
   }
+
+  @override
+  Future<void> updatePost(Post post) async {
+    try {
+      final Map<String, dynamic> postData = post.toJson();
+
+      await _postsCollection.doc(post.postId).set(postData);
+    } catch (err) {
+      print("updating post error: $err");
+    }
+  }
 }

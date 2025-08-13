@@ -60,4 +60,18 @@ class UserReposImpl extends UserRepos {
     }
     return null;
   }
+
+  @override
+  Future<List<UserModel?>> getAllusers() async {
+    try {
+      final QuerySnapshot snapshot = await _userCollection.get();
+
+      return snapshot.docs
+          .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (err) {
+      print("error in gettting all users");
+      throw Exception("error $err");
+    }
+  }
 }

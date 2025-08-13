@@ -11,11 +11,7 @@ abstract class NavigationUtils {
       "Add Post",
     ),
 
-    (
-      MingCuteIcons.mgc_search_2_line,
-      MingCuteIcons.mgc_search_2_fill,
-      "Search",
-    ),
+    (MingCuteIcons.mgc_group_2_line, MingCuteIcons.mgc_group_2_fill, "Teams"),
     (MingCuteIcons.mgc_user_5_line, MingCuteIcons.mgc_user_5_fill, "Profile"),
   ];
 
@@ -23,7 +19,7 @@ abstract class NavigationUtils {
     return switch (state.fullPath) {
       RouteNames.home => 0,
       RouteNames.createPost => 1,
-      RouteNames.search => 2,
+      RouteNames.teams => 2,
       RouteNames.profile => 3,
       _ => 0,
     };

@@ -4,6 +4,7 @@ abstract class PostRepo {
   Future<Post> getPost();
 
   Future<void> savePost(Post post);
+  Future<void> updatePost(Post post);
 
   Stream<List<Post>> getPostStream();
 

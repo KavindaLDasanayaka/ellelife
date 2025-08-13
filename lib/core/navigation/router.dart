@@ -1,12 +1,14 @@
 import 'package:ellelife/core/Widgets/wrapper.dart';
 import 'package:ellelife/core/auth/presentation/login.dart';
+import 'package:ellelife/src/teams/domain/entities/team.dart';
+import 'package:ellelife/src/teams/presentation/teams_screen.dart';
+import 'package:ellelife/src/teams/single_team_page.dart';
 import 'package:ellelife/src/user/presentation/screens/register.dart';
 import 'package:ellelife/core/navigation/navigation_screen.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/src/feed/presentation/screens/create_post.dart';
 import 'package:ellelife/src/feed/presentation/screens/home_screen.dart';
 import 'package:ellelife/src/user/presentation/screens/profile_page.dart';
-import 'package:ellelife/src/user/presentation/screens/search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,9 +49,9 @@ final router = GoRouter(
           builder: (context, state) => CreatePost(),
         ),
         GoRoute(
-          name: "/search",
-          path: RouteNames.search,
-          builder: (context, state) => const SearchPage(),
+          name: "/teams",
+          path: RouteNames.teams,
+          builder: (context, state) => TeamsScreen(),
         ),
         GoRoute(
           name: "/profile",
@@ -70,6 +72,14 @@ final router = GoRouter(
       name: RouteNames.login,
       builder: (context, state) {
         return LoginPage();
+      },
+    ),
+    GoRoute(
+      path: "/singleteam",
+      name: RouteNames.singletTeam,
+      builder: (context, state) {
+        final Team team = state.extra as Team;
+        return SingleTeamPage(team: team);
       },
     ),
   ],
