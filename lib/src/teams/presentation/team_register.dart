@@ -176,8 +176,8 @@ class _TeamRegisterState extends State<TeamRegister> {
                                   borderRadius: BorderRadius.circular(20),
                                   child: Image.file(
                                     _imageFile!,
-                                    width: 200,
-                                    height: 150,
+                                    width: double.infinity,
+                                    // height: 150,
                                   ),
                                 )
                               : Text(
