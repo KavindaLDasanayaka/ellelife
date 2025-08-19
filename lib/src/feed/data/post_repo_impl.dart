@@ -64,11 +64,15 @@ class PostRepoImpl extends PostRepo {
 
   @override
   Stream<List<Post>> getPostStream() {
-    return _postsCollection.snapshots().map(
-      (snapshot) => snapshot.docs
-          .map((doc) => Post.fromJson(doc.data() as Map<String, dynamic>))
-          .toList(),
-    );
+    try {
+      return _postsCollection.snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => Post.fromJson(doc.data() as Map<String, dynamic>))
+            .toList(),
+      );
+    } catch (err) {
+      throw Exception("Posts Loading Error : $err");
+    }
   }
 
   @override
@@ -152,6 +156,21 @@ class PostRepoImpl extends PostRepo {
       await _postsCollection.doc(post.postId).set(postData);
     } catch (err) {
       print("updating post error: $err");
+    }
+  }
+
+  @override
+  Future<List<Post>> getNewPosts() async {
+    try {
+      final QuerySnapshot snapshot = await _postsCollection.get();
+
+      final List<Post> posts = snapshot.docs
+          .map((doc) => Post.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      return posts;
+    } catch (err) {
+      throw Exception("Posts Loading Error : $err");
     }
   }
 }

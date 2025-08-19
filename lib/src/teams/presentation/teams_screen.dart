@@ -44,30 +44,25 @@ class TeamsScreen extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: "Search Team",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(width: 2),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-
-                      borderSide: BorderSide(width: 2, color: mainWhite),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    BlocProvider.of<TeamsBloc>(
-                      context,
-                    ).add(SearchTeam(query: value));
-                  },
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: "Search Team",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(width: 2),
                 ),
-              ],
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+
+                  borderSide: BorderSide(width: 2, color: mainWhite),
+                ),
+              ),
+              onChanged: (value) {
+                BlocProvider.of<TeamsBloc>(
+                  context,
+                ).add(SearchTeam(query: value));
+              },
             ),
           ),
           BlocBuilder<TeamsBloc, TeamsState>(
@@ -77,40 +72,108 @@ class TeamsScreen extends StatelessWidget {
               } else if (state is SearchedTeams) {
                 return Expanded(
                   child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
                     itemCount: state.filteredTeams.length,
                     itemBuilder: (context, index) {
                       final Team? team = state.filteredTeams[index];
-                      return ListTile(
-                        onTap: () {
-                          (context).pushNamed(
-                            RouteNames.singletTeam,
-                            extra: team,
-                          );
-                        },
-                        title: Text(team!.teamName),
-                        subtitle: Text(team!.village),
-                        leading: team.teamPhoto.isNotEmpty
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  team.teamPhoto,
-                                  fit: BoxFit.cover,
-                                  width: 50,
-                                  height: 50,
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            BlocProvider.of<TeamsBloc>(
+                              context,
+                            ).add(TeamsInitEvent());
+                            (context).pushNamed(
+                              RouteNames.singletTeam,
+                              extra: team,
+                            );
+                          },
+                          child: Container(
+                            child: Row(
+                              children: [
+                                team!.teamPhoto.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.network(
+                                          team.teamPhoto,
+                                          fit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                        ),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.network(
+                                          "https://i.stack.imgur.com/l60Hf.png",
+                                          fit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                        ),
+                                      ),
+                                const SizedBox(width: 15),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      team.teamName,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      team.village,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        // ignore: deprecated_member_use
+                                        color: mainWhite.withOpacity(0.5),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              )
-                            : const CircleAvatar(
-                                radius: 64,
-                                backgroundColor: mainColor,
-                                backgroundImage: NetworkImage(
-                                  "https://i.stack.imgur.com/l60Hf.png",
-                                ),
-                              ),
+                              ],
+                            ),
+                          ),
+                        ),
                       );
+                      // return ListTile(
+
+                      //   onTap: () {
+                      //     (context).pushNamed(
+                      //       RouteNames.singletTeam,
+                      //       extra: team,
+                      //     );
+                      //   },
+                      //   title: Text(team!.teamName),
+                      //   subtitle: Text(team.village),
+                      //   leading: team.teamPhoto.isNotEmpty
+                      //       ? ClipRRect(
+                      //           borderRadius: BorderRadius.circular(50),
+                      //           child: Image.network(
+                      //             team.teamPhoto,
+                      //             fit: BoxFit.cover,
+                      //             width: 50,
+                      //             height: 50,
+                      //           ),
+                      //         )
+                      //       : const CircleAvatar(
+                      //           radius: 64,
+                      //           backgroundColor: mainColor,
+                      //           backgroundImage: NetworkImage(
+                      //             "https://i.stack.imgur.com/l60Hf.png",
+                      //           ),
+                      //         ),
+                      // );
                     },
                   ),
                 );
-              } else {
+              } else if (state is TeamsInitial) {
                 return StreamBuilder(
                   stream: TeamsRepoImpl().getCurrentteams(),
                   builder: (context, snapshot) {
@@ -124,50 +187,86 @@ class TeamsScreen extends StatelessWidget {
 
                     final List<Team?> teams = snapshot.data!;
 
-                    return ListView.builder(
-                      itemCount: teams.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final Team? team = teams[index];
-                        return ListTile(
-                          onTap: () {
-                            (context).pushNamed(
-                              RouteNames.singletTeam,
-                              extra: team,
-                            );
-                          },
-                          title: Text(
-                            team!.teamName,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: teams.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          final Team? team = teams[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
                             ),
-                          ),
-                          subtitle: Text(
-                            team.village,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          leading: team.teamPhoto.isEmpty
-                              ? const CircleAvatar(
-                                  radius: 64,
-                                  backgroundColor: mainColor,
-                                  backgroundImage: NetworkImage(
-                                    "https://i.stack.imgur.com/l60Hf.png",
-                                  ),
-                                )
-                              : CircleAvatar(
-                                  radius: 64,
-                                  backgroundColor: mainColor,
-                                  backgroundImage: NetworkImage(team.teamPhoto),
+                            child: GestureDetector(
+                              onTap: () {
+                                (context).pushNamed(
+                                  RouteNames.singletTeam,
+                                  extra: team,
+                                );
+                              },
+                              child: Container(
+                                child: Row(
+                                  children: [
+                                    team!.teamPhoto.isNotEmpty
+                                        ? ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              50,
+                                            ),
+                                            child: Image.network(
+                                              team.teamPhoto,
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          )
+                                        : ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              50,
+                                            ),
+                                            child: Image.network(
+                                              "https://i.stack.imgur.com/l60Hf.png",
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                          ),
+                                    const SizedBox(width: 15),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          team.teamName,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          team.village,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            // ignore: deprecated_member_use
+                                            color: mainWhite.withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                        );
-                      },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 );
+              } else {
+                return const Center(child: Text("Add Teams"));
               }
             },
           ),

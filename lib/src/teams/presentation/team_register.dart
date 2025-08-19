@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:ellelife/core/Widgets/Custom_text_Input_field.dart';
 import 'package:ellelife/core/Widgets/custom_button.dart';
 import 'package:ellelife/core/utils/colors.dart';
-import 'package:ellelife/src/teams/data/team_storage.dart';
-import 'package:ellelife/src/teams/domain/entities/team.dart';
 import 'package:ellelife/src/teams/presentation/bloc/team_register_bloc.dart';
 import 'package:ellelife/src/teams/presentation/bloc/teams_bloc.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +26,6 @@ class _TeamRegisterState extends State<TeamRegister> {
   final TextEditingController _teamContactNoController =
       TextEditingController();
 
-  final TextEditingController _teamImageController = TextEditingController();
-
   File? _imageFile;
 
   //pick the image
@@ -44,31 +40,31 @@ class _TeamRegisterState extends State<TeamRegister> {
     }
   }
 
-  Future<void> _saveTeam() async {
-    try {
-      if (_imageFile != null) {
-        final imageUrl = await TeamStorage().uploadImageToCloudinary(
-          _imageFile!,
-        );
-        _teamImageController.text = imageUrl!;
-        print(_teamImageController.text);
-      }
+  // Future<void> _saveTeam() async {
+  //   try {
+  //     if (_imageFile != null) {
+  //       final imageUrl = await TeamStorage().uploadImageToCloudinary(
+  //         _imageFile!,
+  //       );
+  //       _teamImageController.text = imageUrl!;
+  //       print(_teamImageController.text);
+  //     }
 
-      final team = Team(
-        teamId: "",
-        teamName: _teamNameController.text.trim(),
-        village: _teamVillageController.text.trim(),
-        contactNo: int.parse(_teamContactNoController.text),
-        teamPhoto: _teamImageController.text,
-      );
+  //     final team = Team(
+  //       teamId: "",
+  //       teamName: _teamNameController.text.trim(),
+  //       village: _teamVillageController.text.trim(),
+  //       contactNo: int.parse(_teamContactNoController.text),
+  //       teamPhoto: _teamImageController.text,
+  //     );
 
-      BlocProvider.of<TeamRegisterBloc>(
-        context,
-      ).add(TeamRegisteringEvent(team: team));
-    } catch (err) {
-      throw Exception("Error in saving team $err");
-    }
-  }
+  //     BlocProvider.of<TeamRegisterBloc>(
+  //       context,
+  //     ).add(TeamRegisteringEvent(team: team));
+  //   } catch (err) {
+  //     throw Exception("Error in saving team $err");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +120,7 @@ class _TeamRegisterState extends State<TeamRegister> {
                               if (value == null || value.isEmpty) {
                                 return "Please enter team name";
                               }
+                              return null;
                             },
                             labelText: "Team Name",
                             obscureText: false,
@@ -136,6 +133,7 @@ class _TeamRegisterState extends State<TeamRegister> {
                               if (value == null || value.isEmpty) {
                                 return "Please enter village of the team";
                               }
+                              return null;
                             },
                             labelText: "Village",
                             obscureText: false,
@@ -148,6 +146,7 @@ class _TeamRegisterState extends State<TeamRegister> {
                               if (value == null || value.isEmpty) {
                                 return "Please enter contact number";
                               }
+                              return null;
                             },
                             labelText: "Mobile No",
                             obscureText: false,
@@ -197,7 +196,16 @@ class _TeamRegisterState extends State<TeamRegister> {
                             buttonTextColor: mainWhite,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                _saveTeam();
+                                BlocProvider.of<TeamRegisterBloc>(context).add(
+                                  TeamRegisteringEvent(
+                                    image: _imageFile,
+                                    teamName: _teamNameController.text.trim(),
+                                    village: _teamVillageController.text.trim(),
+                                    contactNo: int.parse(
+                                      _teamContactNoController.text,
+                                    ),
+                                  ),
+                                );
                               }
                             },
                           ),

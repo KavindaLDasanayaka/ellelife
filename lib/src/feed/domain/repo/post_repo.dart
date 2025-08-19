@@ -7,6 +7,7 @@ abstract class PostRepo {
   Future<void> updatePost(Post post);
 
   Stream<List<Post>> getPostStream();
+  Future<List<Post>> getNewPosts();
 
   Future<void> likePost({required String postId, required String userId});
 

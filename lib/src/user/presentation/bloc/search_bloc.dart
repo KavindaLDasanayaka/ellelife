@@ -12,14 +12,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   void _filterUsers(final SerachUserEvent event, final Emitter emit) async {
     emit(SearchLoading());
-    List<UserModel?> _users = await UserReposImpl().getAllusers();
-    List<UserModel?> _filteredUsers = _users
+    List<UserModel?> users = await UserReposImpl().getAllusers();
+    List<UserModel?> filteredUsers = users
         .where(
           (user) =>
               user!.name.toLowerCase().contains(event.queary.toLowerCase()),
         )
         .toList();
 
-    emit(SearchLoaded(users: _filteredUsers));
+    emit(SearchLoaded(users: filteredUsers));
   }
 }

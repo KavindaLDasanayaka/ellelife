@@ -214,19 +214,19 @@ class _PostWidgetState extends State<PostWidget> {
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shrinkWrap: true,
                             children: [
-                              _buildDialogOption(
-                                context: context,
-                                icon: Icons.edit,
-                                text: "Edit",
-                                onTap: () {},
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Divider(
-                                  // ignore: deprecated_member_use
-                                  color: mainWhite.withOpacity(0.5),
-                                ),
-                              ),
+                              // _buildDialogOption(
+                              //   context: context,
+                              //   icon: Icons.edit,
+                              //   text: "Edit",
+                              //   onTap: () {},
+                              // ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(8.0),
+                              //   child: Divider(
+                              //     // ignore: deprecated_member_use
+                              //     color: mainWhite.withOpacity(0.5),
+                              //   ),
+                              // ),
                               _buildDialogOption(
                                 context: context,
                                 icon: Icons.delete,

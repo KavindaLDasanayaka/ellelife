@@ -51,9 +51,15 @@ class _EditPostPageState extends State<EditPostPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _captionController.text = widget.postFromSelection.postCaption;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create Post")),
+      appBar: AppBar(title: Text("Edit Post")),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: SingleChildScrollView(
@@ -61,7 +67,7 @@ class _EditPostPageState extends State<EditPostPage> {
             listener: (context, state) {
               if (state is PostCreated) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Posts Created Successfully")),
+                  SnackBar(content: Text("Posts Edited Successfully")),
                 );
               }
             },
@@ -89,7 +95,7 @@ class _EditPostPageState extends State<EditPostPage> {
                       ),
                       const SizedBox(height: 20),
                       DropdownButton<Mood>(
-                        value: state.mood,
+                        value: widget.postFromSelection.mood,
                         items: Mood.values.map((Mood mood) {
                           return DropdownMenuItem(
                             value: mood,
@@ -144,7 +150,7 @@ class _EditPostPageState extends State<EditPostPage> {
                       ),
                       const SizedBox(height: 20),
                       CustomButton(
-                        buttonText: "Create Post",
+                        buttonText: "Edit Post",
                         width: double.infinity,
                         buttonColor: mainColor,
                         buttonTextColor: mainWhite,
