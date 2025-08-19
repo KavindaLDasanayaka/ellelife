@@ -164,7 +164,7 @@ class _PostWidgetState extends State<PostWidget> {
           Text(
             widget.post.postCaption,
             // ignore: deprecated_member_use
-            style: TextStyle(color: mainWhite.withOpacity(0.6), fontSize: 16),
+            style: TextStyle(color: mainWhite.withOpacity(0.9), fontSize: 16),
           ),
           const SizedBox(height: 10),
           if (widget.post.postImage.isNotEmpty)
