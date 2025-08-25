@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class UserStorage {
-  final String _cloudName = "dd6afzaus";
+  final String _cloudName = dotenv.env['CLOUDINARY_CLOUD_NAM'] ?? "";
   // Upload image to Cloudinary
   Future<String?> uploadImageToCloudinary(File imageFile) async {
     try {
