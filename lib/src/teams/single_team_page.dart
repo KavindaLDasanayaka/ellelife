@@ -2,10 +2,20 @@ import 'package:ellelife/core/Widgets/custom_button.dart';
 import 'package:ellelife/core/utils/colors.dart';
 import 'package:ellelife/src/teams/domain/entities/team.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SingleTeamPage extends StatelessWidget {
   final Team team;
   const SingleTeamPage({super.key, required this.team});
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri callUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(callUri)) {
+      await launchUrl(callUri);
+    } else {
+      throw 'Could not launch $phoneNumber';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +70,9 @@ class SingleTeamPage extends StatelessWidget {
                 width: double.infinity,
                 buttonColor: Colors.lightBlue,
                 buttonTextColor: mainWhite,
-                onPressed: () {},
+                onPressed: () {
+                  _makePhoneCall(team.contactNo.toString());
+                },
               ),
             ],
           ),

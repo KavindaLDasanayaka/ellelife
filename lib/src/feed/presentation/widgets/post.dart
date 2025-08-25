@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ellelife/core/utils/colors.dart';
 import 'package:ellelife/core/utils/constants.dart';
 import 'package:ellelife/core/utils/mood.dart';
@@ -170,18 +171,11 @@ class _PostWidgetState extends State<PostWidget> {
           if (widget.post.postImage.isNotEmpty)
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                widget.post.postImage,
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.5,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.error, color: Colors.red);
-                },
+              child: CachedNetworkImage(
+                imageUrl: widget.post.postImage,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(), // while loading
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
           const SizedBox(height: 10),

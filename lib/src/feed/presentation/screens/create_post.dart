@@ -27,7 +27,10 @@ class _CreatePostState extends State<CreatePost> {
   //pick the image
   Future<void> _pickImage(ImageSource source, Mood mood) async {
     final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: source);
+    final pickedImage = await picker.pickImage(
+      source: source,
+      imageQuality: 10,
+    );
     if (pickedImage != null) {
       BlocProvider.of<PostCreateBloc>(
         context,

@@ -31,7 +31,10 @@ class _TeamRegisterState extends State<TeamRegister> {
   //pick the image
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final pickedImage = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 10,
+    );
 
     if (pickedImage != null) {
       setState(() {

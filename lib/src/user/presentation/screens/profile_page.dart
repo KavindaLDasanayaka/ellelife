@@ -7,6 +7,8 @@ import 'package:ellelife/src/user/data/user_repos_impl.dart';
 import 'package:ellelife/src/user/domain/entities/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -50,8 +52,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _signOut(BuildContext context) async {
+    clearDiskCache();
     await UserAuthService().signOut();
     (context).goNamed(RouteNames.login);
+  }
+
+  void clearDiskCache() async {
+    await DefaultCacheManager().emptyCache(); // clears disk cache
   }
 
   @override
