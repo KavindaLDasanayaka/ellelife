@@ -9,13 +9,15 @@ class PostStorage {
   // final _apiKey = "238272859496916";
   // final String _apiSecret = "R4QqSyKdJC_WjmRw4As_lTCO0Uo";
 
-  final String _cloudName = dotenv.env['CLOUDINARY_CLOUD_NAM'] ?? "";
+  final String _cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? "";
   final _apiKey = dotenv.env['CLOUDINARY_API_KEY'] ?? "";
   final String _apiSecret = dotenv.env['CLOUDINARY_API_SECRET'] ?? "";
 
   // Upload image to Cloudinary
   Future<String?> uploadImageToCloudinary({required File imageFile}) async {
     try {
+      print(_cloudName);
+
       final String cloudName = _cloudName;
       const uploadPreset = 'feeds-pictures';
       final String uploadUrl =
