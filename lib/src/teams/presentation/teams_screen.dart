@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/core/utils/colors.dart';
 import 'package:ellelife/src/teams/data/teams_repo_impl.dart';
@@ -99,11 +100,12 @@ class TeamsScreen extends StatelessWidget {
                                 team!.teamPhoto.isNotEmpty
                                     ? ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
-                                        child: Image.network(
-                                          team.teamPhoto,
-                                          fit: BoxFit.cover,
-                                          width: 50,
-                                          height: 50,
+                                        child: CachedNetworkImage(
+                                          imageUrl: team.teamPhoto,
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(), // while loading
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
                                         ),
                                       )
                                     : ClipRRect(
@@ -142,34 +144,6 @@ class TeamsScreen extends StatelessWidget {
                           ),
                         ),
                       );
-                      // return ListTile(
-
-                      //   onTap: () {
-                      //     (context).pushNamed(
-                      //       RouteNames.singletTeam,
-                      //       extra: team,
-                      //     );
-                      //   },
-                      //   title: Text(team!.teamName),
-                      //   subtitle: Text(team.village),
-                      //   leading: team.teamPhoto.isNotEmpty
-                      //       ? ClipRRect(
-                      //           borderRadius: BorderRadius.circular(50),
-                      //           child: Image.network(
-                      //             team.teamPhoto,
-                      //             fit: BoxFit.cover,
-                      //             width: 50,
-                      //             height: 50,
-                      //           ),
-                      //         )
-                      //       : const CircleAvatar(
-                      //           radius: 64,
-                      //           backgroundColor: mainColor,
-                      //           backgroundImage: NetworkImage(
-                      //             "https://i.stack.imgur.com/l60Hf.png",
-                      //           ),
-                      //         ),
-                      // );
                     },
                   ),
                 );
