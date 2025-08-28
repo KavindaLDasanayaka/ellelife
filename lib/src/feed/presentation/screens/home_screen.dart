@@ -1,3 +1,4 @@
+import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/src/feed/data/post_repo_impl.dart';
 import 'package:ellelife/src/feed/domain/entities/post.dart';
 import 'package:ellelife/src/feed/presentation/widgets/post.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -51,9 +53,14 @@ class HomeScreen extends StatelessWidget {
                 final Post post = posts[index];
                 return Padding(
                   padding: const EdgeInsets.all(20),
-                  child: PostWidget(
-                    post: post,
-                    currentUserId: FirebaseAuth.instance.currentUser!.uid,
+                  child: GestureDetector(
+                    onTap: () {
+                      (context).pushNamed(RouteNames.singletPost, extra: post);
+                    },
+                    child: PostWidget(
+                      post: post,
+                      currentUserId: FirebaseAuth.instance.currentUser!.uid,
+                    ),
                   ),
                 );
               },

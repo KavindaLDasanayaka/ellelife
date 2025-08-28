@@ -9,19 +9,26 @@ class UserLoginBloc extends Bloc<UserLoginEvent, UserLoginState> {
   UserLoginBloc() : super(UserLoginInitial()) {
     on<UserLogEvent>(_userLogEvent);
     on<SignUpWithGoogleEvent>(_signInWithGoogle);
+    on<UserLogoutEvent>((event, emit) {
+      emit(UserLoginInitial());
+    });
   }
 
   Future<void> _userLogEvent(
     final UserLogEvent event,
     final Emitter emit,
   ) async {
-    emit(UserLoginLoading());
-    await UserAuthService().signInWithEmailAndPassword(
-      email: event.userName,
-      password: event.password,
-    );
+    try {
+      emit(UserLoginLoading());
+      await UserAuthService().signInWithEmailAndPassword(
+        email: event.userName,
+        password: event.password,
+      );
 
-    emit(UserLoggedIn());
+      emit(UserLoggedIn());
+    } catch (err) {
+      throw Exception("Login Error! $err");
+    }
   }
 
   Future<void> _signInWithGoogle(

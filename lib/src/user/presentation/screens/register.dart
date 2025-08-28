@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -41,13 +42,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //pick the image
   Future<void> _pickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: source);
+    var status = await Permission.camera.request();
+    if (status.isGranted || await Permission.storage.request().isGranted) {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(source: source);
 
-    if (pickedImage != null) {
-      setState(() {
-        _imageFile = File(pickedImage.path);
-      });
+      if (pickedImage != null) {
+        setState(() {
+          _imageFile = File(pickedImage.path);
+        });
+      }
+    } else {
+      throw Exception("Camera permission denied");
     }
   }
 
@@ -111,30 +117,17 @@ class _RegisterPageState extends State<RegisterPage> {
   //save user
   Future<void> _saveUser(BuildContext context) async {
     try {
-      if (_imageFile != null) {
-        final imageUrl = await UserStorage().uploadImageToCloudinary(
-          _imageFile!,
-        );
-        _imageController.text = imageUrl!;
-        print(_imageController.text);
-      }
-
-      final user = UserModel(
-        userId: "",
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        teamName: _teamNameController.text.trim(),
-        imageUrl: _imageController.text,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        // password: _passwordController.text,
-        followers: 0,
-      );
       final password = _passwordController.text;
 
-      BlocProvider.of<UserRegisterBloc>(
-        context,
-      ).add(UserRegiteringEvent(user: user, password: password));
+      BlocProvider.of<UserRegisterBloc>(context).add(
+        UserRegiteringEvent(
+          userName: _nameController.text.trim(),
+          password: password,
+          teamName: _teamNameController.text.trim(),
+          userEmail: _emailController.text.trim(),
+          imageFile: _imageFile,
+        ),
+      );
     } catch (err) {
       print("User Saving UI error: $err");
       showDialog(
@@ -191,6 +184,31 @@ class _RegisterPageState extends State<RegisterPage> {
                   builder: (context, state) {
                     if (state is UserRegisteringLoading) {
                       return const Center(child: CircularProgressIndicator());
+                    } else if (state is UserRegisteringError) {
+                      return Column(
+                        children: [
+                          Text(
+                            state.message,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: mainColor,
+                            ),
+                          ),
+                          const SizedBox(height: 25),
+                          CustomButton(
+                            buttonText: "Try Again!",
+                            width: double.infinity,
+                            buttonColor: mainColor,
+                            buttonTextColor: mainWhite,
+                            onPressed: () {
+                              BlocProvider.of<UserRegisterBloc>(
+                                context,
+                              ).add(UserRegisterEventInit());
+                            },
+                          ),
+                        ],
+                      );
                     } else {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -282,7 +300,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 iconData: Icons.key,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Please Enter your Passowrd!";
+                                    return "Please Enter Valid Passowrd!";
+                                  } else if (value.length < 6) {
+                                    return "Password is too Short! User 6 or more characters";
                                   }
                                   return null;
                                 },
@@ -312,7 +332,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 buttonColor: mainColor,
                                 buttonTextColor: mainWhite,
                                 onPressed: () {
-                                  _saveUser(context);
+                                  if (_formKey.currentState!.validate()) {
+                                    _saveUser(context);
+                                  }
                                 },
                               ),
 

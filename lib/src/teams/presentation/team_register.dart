@@ -8,6 +8,7 @@ import 'package:ellelife/src/teams/presentation/bloc/teams_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class TeamRegister extends StatefulWidget {
   const TeamRegister({super.key});
@@ -30,44 +31,23 @@ class _TeamRegisterState extends State<TeamRegister> {
 
   //pick the image
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 10,
-    );
+    var status = await Permission.camera.request();
+    if (status.isGranted || await Permission.storage.request().isGranted) {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 10,
+      );
 
-    if (pickedImage != null) {
-      setState(() {
-        _imageFile = File(pickedImage.path);
-      });
+      if (pickedImage != null) {
+        setState(() {
+          _imageFile = File(pickedImage.path);
+        });
+      }
+    } else {
+      throw Exception("Camera permission denied");
     }
   }
-
-  // Future<void> _saveTeam() async {
-  //   try {
-  //     if (_imageFile != null) {
-  //       final imageUrl = await TeamStorage().uploadImageToCloudinary(
-  //         _imageFile!,
-  //       );
-  //       _teamImageController.text = imageUrl!;
-  //       print(_teamImageController.text);
-  //     }
-
-  //     final team = Team(
-  //       teamId: "",
-  //       teamName: _teamNameController.text.trim(),
-  //       village: _teamVillageController.text.trim(),
-  //       contactNo: int.parse(_teamContactNoController.text),
-  //       teamPhoto: _teamImageController.text,
-  //     );
-
-  //     BlocProvider.of<TeamRegisterBloc>(
-  //       context,
-  //     ).add(TeamRegisteringEvent(team: team));
-  //   } catch (err) {
-  //     throw Exception("Error in saving team $err");
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

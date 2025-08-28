@@ -7,4 +7,5 @@ class RouteNames {
   static const String teams = "/teams";
   static const String profile = "/profile";
   static const String singletTeam = "/singleteam";
+  static const String singletPost = "/singlepost";
 }

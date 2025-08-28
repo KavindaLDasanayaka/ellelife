@@ -39,6 +39,30 @@ class LoginPage extends StatelessWidget {
                 builder: (context, state) {
                   if (state is UserLoginLoading) {
                     return const Center(child: CircularProgressIndicator());
+                  } else if (state is UserLoginError) {
+                    return Column(
+                      children: [
+                        Text(
+                          state.message,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: mainColor,
+                          ),
+                        ),
+                        CustomButton(
+                          buttonText: "Try Agin!",
+                          width: double.infinity,
+                          buttonColor: mainColor,
+                          buttonTextColor: mainWhite,
+                          onPressed: () {
+                            BlocProvider.of<UserLoginBloc>(
+                              context,
+                            ).add(UserLogoutEvent());
+                          },
+                        ),
+                      ],
+                    );
                   } else {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -90,26 +114,26 @@ class LoginPage extends StatelessWidget {
                               },
                             ),
                             const SizedBox(height: 30),
-                            Text(
-                              "Sign in with Google to access the app's features",
-                              style: TextStyle(
-                                fontSize: 13,
-                                // ignore: deprecated_member_use
-                                color: mainWhite.withOpacity(0.6),
-                              ),
-                            ),
+                            // Text(
+                            //   "Sign in with Google to access the app's features",
+                            //   style: TextStyle(
+                            //     fontSize: 13,
+                            //     // ignore: deprecated_member_use
+                            //     color: mainWhite.withOpacity(0.6),
+                            //   ),
+                            // ),
                             const SizedBox(height: 20),
-                            CustomButton(
-                              buttonText: "Sign in with Google",
-                              width: double.infinity,
-                              buttonColor: mainColor,
-                              buttonTextColor: mainWhite,
-                              onPressed: () {
-                                BlocProvider.of<UserLoginBloc>(
-                                  context,
-                                ).add(SignUpWithGoogleEvent());
-                              },
-                            ),
+                            // CustomButton(
+                            //   buttonText: "Sign in with Google",
+                            //   width: double.infinity,
+                            //   buttonColor: mainColor,
+                            //   buttonTextColor: mainWhite,
+                            //   onPressed: () {
+                            //     BlocProvider.of<UserLoginBloc>(
+                            //       context,
+                            //     ).add(SignUpWithGoogleEvent());
+                            //   },
+                            // ),
                             const SizedBox(height: 16),
                             Center(
                               child: TextButton(

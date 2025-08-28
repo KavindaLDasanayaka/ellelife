@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
@@ -26,15 +27,20 @@ class _CreatePostState extends State<CreatePost> {
 
   //pick the image
   Future<void> _pickImage(ImageSource source, Mood mood) async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(
-      source: source,
-      imageQuality: 10,
-    );
-    if (pickedImage != null) {
-      BlocProvider.of<PostCreateBloc>(
-        context,
-      ).add(ImageSelectEvent(file: File(pickedImage.path), mood: mood));
+    var status = await Permission.camera.request();
+    if (status.isGranted || await Permission.storage.request().isGranted) {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(
+        source: source,
+        imageQuality: 10,
+      );
+      if (pickedImage != null) {
+        BlocProvider.of<PostCreateBloc>(
+          context,
+        ).add(ImageSelectEvent(file: File(pickedImage.path), mood: mood));
+      }
+    } else {
+      throw Exception("Camera permission denied");
     }
   }
 
