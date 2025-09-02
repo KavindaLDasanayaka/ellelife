@@ -3,76 +3,117 @@ import 'package:ellelife/core/Widgets/custom_button.dart';
 import 'package:ellelife/core/auth/presentation/bloc/user_login_bloc.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/core/utils/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordResetController =
       TextEditingController();
 
-  Future<void> _passwordReset(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (context) => Center(child: CircularProgressIndicator()),
-    );
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: _passwordResetController.text.trim(),
-      );
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Password reset email sent!.")));
-      Navigator.of(context).pop();
-    } catch (err) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Password reset Error! No user found for this email."),
-        ),
-      );
-      Navigator.of(context).pop();
-    }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _passwordResetController.dispose();
+    super.dispose();
   }
 
-  Future<void> _forgotPassword(BuildContext context) async {
+  void _showForgotPasswordDialog(BuildContext context) {
     showDialog(
       context: context,
-
-      builder: (context) => AlertDialog(
-        title: Text("Email"),
-        content: CustomTextInputField(
-          controller: _passwordResetController,
-          iconData: Icons.email,
-          validator: (value) {
-            return null;
-          },
-          labelText: "Email",
-          obscureText: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Reset Password"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Enter your email address and we'll send you a link to reset your password.",
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            CustomTextInputField(
+              controller: _passwordResetController,
+              iconData: Icons.email,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter your email";
+                }
+                if (!RegExp(
+                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                ).hasMatch(value)) {
+                  return 'Please enter a valid email address';
+                }
+                return null;
+              },
+              labelText: "Email",
+              obscureText: false,
+            ),
+          ],
         ),
         actions: [
-          ElevatedButton(
+          TextButton(
             onPressed: () {
-              if (_passwordResetController.text.isNotEmpty) {
-                // Navigator.pop(context);
-                _passwordReset(context);
+              Navigator.of(dialogContext).pop();
+              _passwordResetController.clear();
+            },
+            child: const Text("Cancel"),
+          ),
+          BlocConsumer<UserLoginBloc, UserLoginState>(
+            listener: (context, state) {
+              if (state is ForgotPasswordSuccess) {
+                Navigator.of(dialogContext).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                _passwordResetController.clear();
+              } else if (state is ForgotPasswordError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
-            child: Text("Reset Password"),
+            builder: (context, state) {
+              if (state is ForgotPasswordLoading) {
+                return const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
+              }
+              return ElevatedButton(
+                onPressed: () {
+                  if (_passwordResetController.text.isNotEmpty) {
+                    BlocProvider.of<UserLoginBloc>(context).add(
+                      ForgotPasswordEvent(
+                        email: _passwordResetController.text.trim(),
+                      ),
+                    );
+                  }
+                },
+                child: const Text("Send Reset Email"),
+              );
+            },
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _passwordResetController.dispose();
   }
 
   @override
@@ -187,7 +228,7 @@ class LoginPage extends StatelessWidget {
                             Center(
                               child: TextButton(
                                 onPressed: () {
-                                  _forgotPassword(context);
+                                  _showForgotPasswordDialog(context);
                                 },
                                 child: Text(
                                   "Forgot Password? Click here to reset",

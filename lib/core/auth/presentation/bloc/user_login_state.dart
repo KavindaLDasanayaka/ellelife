@@ -13,3 +13,17 @@ final class UserLoginError extends UserLoginState {
 
   UserLoginError({required this.message});
 }
+
+final class ForgotPasswordLoading extends UserLoginState {}
+
+final class ForgotPasswordSuccess extends UserLoginState {
+  final String message;
+
+  ForgotPasswordSuccess({required this.message});
+}
+
+final class ForgotPasswordError extends UserLoginState {
+  final String message;
+
+  ForgotPasswordError({required this.message});
+}

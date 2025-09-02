@@ -127,18 +127,20 @@ class UserAuthService extends UserAuthRepo {
   @override
   Future<void> resetPassword(String email) async {
     try {
-      final existingUsers = await FirebaseFirestore.instance
-          .collection("users")
-          .where("email", isEqualTo: email)
-          .get();
+      // Validate email format
+      if (email.isEmpty ||
+          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+        throw Exception("Please enter a valid email address");
+      }
 
-      if (existingUsers.docs.isNotEmpty) {
-        // Email already exists → emit error
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      } else {}
+      // Send password reset email
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      print('Firebase Auth Error: ${mapFirebaseAuthExceptionCode(e.code)}');
+      throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
-      print(e);
-      throw Exception("Password Reset Error!");
+      print('Password Reset Error: $e');
+      throw Exception("Failed to send password reset email. Please try again.");
     }
   }
 }

@@ -12,3 +12,9 @@ final class UserLogEvent extends UserLoginEvent {
 final class UserLogoutEvent extends UserLoginEvent {}
 
 final class SignUpWithGoogleEvent extends UserLoginEvent {}
+
+final class ForgotPasswordEvent extends UserLoginEvent {
+  final String email;
+
+  ForgotPasswordEvent({required this.email});
+}

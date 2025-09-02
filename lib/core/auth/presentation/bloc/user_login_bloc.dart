@@ -9,6 +9,7 @@ class UserLoginBloc extends Bloc<UserLoginEvent, UserLoginState> {
   UserLoginBloc() : super(UserLoginInitial()) {
     on<UserLogEvent>(_userLogEvent);
     on<SignUpWithGoogleEvent>(_signInWithGoogle);
+    on<ForgotPasswordEvent>(_forgotPasswordEvent);
     on<UserLogoutEvent>((event, emit) {
       emit(UserLoginInitial());
     });
@@ -39,5 +40,28 @@ class UserLoginBloc extends Bloc<UserLoginEvent, UserLoginState> {
     emit(UserLoginLoading());
     await UserAuthService().signInWithGoogle();
     emit(UserLoggedIn());
+  }
+
+  Future<void> _forgotPasswordEvent(
+    final ForgotPasswordEvent event,
+    final Emitter emit,
+  ) async {
+    try {
+      emit(ForgotPasswordLoading());
+      await UserAuthService().resetPassword(event.email);
+      emit(
+        ForgotPasswordSuccess(
+          message:
+              "Password reset email sent successfully! Please check your inbox.",
+        ),
+      );
+    } catch (err) {
+      emit(
+        ForgotPasswordError(
+          message:
+              "Failed to send password reset email. Please check the email address and try again.",
+        ),
+      );
+    }
   }
 }
