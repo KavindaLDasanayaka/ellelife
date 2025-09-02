@@ -5,9 +5,6 @@ import 'package:ellelife/core/Widgets/custom_button.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/core/utils/colors.dart';
 
-import 'package:ellelife/src/user/data/user_storage.dart';
-import 'package:ellelife/src/user/domain/entities/user_model.dart';
-
 import 'package:ellelife/src/user/presentation/bloc/user_register_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

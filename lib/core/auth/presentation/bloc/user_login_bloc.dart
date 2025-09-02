@@ -27,6 +27,7 @@ class UserLoginBloc extends Bloc<UserLoginEvent, UserLoginState> {
 
       emit(UserLoggedIn());
     } catch (err) {
+      emit(UserLoginError(message: "Email or Password is Incorrect!"));
       throw Exception("Login Error! $err");
     }
   }

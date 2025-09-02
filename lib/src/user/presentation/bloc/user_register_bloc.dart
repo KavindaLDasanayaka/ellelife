@@ -34,19 +34,19 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
         return;
       }
 
-      String? _imageUrl;
+      String? imageUrl0;
       if (event.imageFile != null) {
         final imageUrl = await UserStorage().uploadImageToCloudinary(
           event.imageFile!,
         );
-        _imageUrl = imageUrl!;
+        imageUrl0 = imageUrl!;
       }
       final UserModel user = UserModel(
         userId: "",
         name: event.userName,
         email: event.userEmail,
         teamName: event.teamName,
-        imageUrl: _imageUrl ?? "",
+        imageUrl: imageUrl0 ?? "",
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         followers: 0,

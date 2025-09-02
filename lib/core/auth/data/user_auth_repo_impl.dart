@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ellelife/core/auth/domain/repo/user_auth_repo.dart';
 import 'package:ellelife/core/exceptions/firebase_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserAuthService extends UserAuthRepo {
@@ -120,6 +121,24 @@ class UserAuthService extends UserAuthRepo {
       throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
       print('Error signing in with Google: $e');
+    }
+  }
+
+  @override
+  Future<void> resetPassword(String email) async {
+    try {
+      final existingUsers = await FirebaseFirestore.instance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .get();
+
+      if (existingUsers.docs.isNotEmpty) {
+        // Email already exists → emit error
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      } else {}
+    } catch (e) {
+      print(e);
+      throw Exception("Password Reset Error!");
     }
   }
 }

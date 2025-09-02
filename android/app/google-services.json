@@ -12,7 +12,20 @@
           "package_name": "com.example.ellelife"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "134210412744-vk4c3pvemkbhc8tr2dudhpv7jbra99pj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ellelife",
+            "certificate_hash": "f1ba037fd19024b0a692e35568d7afdb8deb2d4c"
+          }
+        },
+        {
+          "client_id": "134210412744-8nm6k1vvqva8j6gtuh50vkp5ngmef7ou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAQnfzWqkcBLWIKUQIm644rmPWxAZwxf9w"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "134210412744-8nm6k1vvqva8j6gtuh50vkp5ngmef7ou.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "134210412744-830tt08b4couvcokph4i6kadar9m5239.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ellelife"
+              }
+            }
+          ]
         }
       }
     }

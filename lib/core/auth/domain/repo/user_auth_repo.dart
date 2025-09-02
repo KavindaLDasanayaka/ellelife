@@ -12,4 +12,5 @@ abstract class UserAuthRepo {
     required String password,
   });
   Future<void> signInWithGoogle();
+  Future<void> resetPassword(String email);
 }

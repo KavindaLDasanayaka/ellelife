@@ -3,6 +3,7 @@ import 'package:ellelife/core/Widgets/custom_button.dart';
 import 'package:ellelife/core/auth/presentation/bloc/user_login_bloc.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/core/utils/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,66 @@ class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordResetController =
+      TextEditingController();
+
+  Future<void> _passwordReset(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => Center(child: CircularProgressIndicator()),
+    );
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: _passwordResetController.text.trim(),
+      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Password reset email sent!.")));
+      Navigator.of(context).pop();
+    } catch (err) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Password reset Error! No user found for this email."),
+        ),
+      );
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _forgotPassword(BuildContext context) async {
+    showDialog(
+      context: context,
+
+      builder: (context) => AlertDialog(
+        title: Text("Email"),
+        content: CustomTextInputField(
+          controller: _passwordResetController,
+          iconData: Icons.email,
+          validator: (value) {
+            return null;
+          },
+          labelText: "Email",
+          obscureText: false,
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              if (_passwordResetController.text.isNotEmpty) {
+                // Navigator.pop(context);
+                _passwordReset(context);
+              }
+            },
+            child: Text("Reset Password"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _passwordResetController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +112,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         CustomButton(
-                          buttonText: "Try Agin!",
+                          buttonText: "Try Again!",
                           width: double.infinity,
                           buttonColor: mainColor,
                           buttonTextColor: mainWhite,
@@ -122,7 +183,21 @@ class LoginPage extends StatelessWidget {
                             //     color: mainWhite.withOpacity(0.6),
                             //   ),
                             // ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 0),
+                            Center(
+                              child: TextButton(
+                                onPressed: () {
+                                  _forgotPassword(context);
+                                },
+                                child: Text(
+                                  "Forgot Password? Click here to reset",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: mainWhite,
+                                  ),
+                                ),
+                              ),
+                            ),
                             // CustomButton(
                             //   buttonText: "Sign in with Google",
                             //   width: double.infinity,
