@@ -15,15 +15,30 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
   }
 
   Future<void> _searchTeam(final SearchTeam event, final Emitter emit) async {
-    emit(SearchingTeams());
-    List<Team?> teams = await TeamsRepoImpl().getAllteams();
-    List<Team?> filteredTeams = teams
-        .where(
-          (team) =>
-              team!.teamName.toLowerCase().contains(event.query.toLowerCase()),
-        )
-        .toList();
+    try {
+      // If search query is empty, return to initial state
+      if (event.query.trim().isEmpty) {
+        emit(TeamsInitial());
+        return;
+      }
 
-    emit(SearchedTeams(filteredTeams: filteredTeams));
+      emit(SearchingTeams());
+      List<Team?> teams = await TeamsRepoImpl().getAllteams();
+
+      // Filter teams by both team name and village
+      List<Team?> filteredTeams = teams.where((team) {
+        if (team == null) return false;
+
+        final teamName = team.teamName.toLowerCase();
+        final village = team.village.toLowerCase();
+        final query = event.query.toLowerCase().trim();
+
+        return teamName.contains(query) || village.contains(query);
+      }).toList();
+
+      emit(SearchedTeams(filteredTeams: filteredTeams));
+    } catch (error) {
+      emit(SearchingTeamsError(message: 'Failed to search teams: $error'));
+    }
   }
 }

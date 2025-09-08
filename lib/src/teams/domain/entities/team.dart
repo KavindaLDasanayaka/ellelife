@@ -2,7 +2,7 @@ class Team {
   final String teamId;
   final String teamName;
   final String village;
-  final int contactNo;
+  final String contactNo;
   final String teamPhoto;
 
   Team({

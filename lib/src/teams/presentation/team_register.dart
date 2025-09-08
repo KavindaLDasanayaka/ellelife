@@ -184,9 +184,7 @@ class _TeamRegisterState extends State<TeamRegister> {
                                     image: _imageFile,
                                     teamName: _teamNameController.text.trim(),
                                     village: _teamVillageController.text.trim(),
-                                    contactNo: int.parse(
-                                      _teamContactNoController.text,
-                                    ),
+                                    contactNo: _teamContactNoController.text,
                                   ),
                                 );
                               }

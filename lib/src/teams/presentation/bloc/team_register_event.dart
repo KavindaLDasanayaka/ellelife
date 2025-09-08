@@ -6,7 +6,7 @@ final class TeamRegisteringEvent extends TeamRegisterEvent {
   final File? image;
   final String teamName;
   final String village;
-  final int contactNo;
+  final String contactNo;
 
   TeamRegisteringEvent({
     required this.image,

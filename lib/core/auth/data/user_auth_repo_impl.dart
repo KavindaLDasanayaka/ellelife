@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ellelife/core/auth/domain/repo/user_auth_repo.dart';
 import 'package:ellelife/core/exceptions/firebase_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserAuthService extends UserAuthRepo {
@@ -16,10 +15,9 @@ class UserAuthService extends UserAuthRepo {
     try {
       await _auth.signOut();
     } on FirebaseAuthException catch (e) {
-      print('Error signing out: ${mapFirebaseAuthExceptionCode(e.code)}');
       throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
-      print('Error signing out: $e');
+      throw Exception('Error signing out: $e');
     }
   }
 
@@ -43,10 +41,8 @@ class UserAuthService extends UserAuthRepo {
       );
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      print('Error creating user: ${mapFirebaseAuthExceptionCode(e.code)}');
       throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
-      print('Error creating user: $e');
       throw Exception(e.toString());
     }
   }
@@ -61,11 +57,9 @@ class UserAuthService extends UserAuthRepo {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      print('Error signing in: ${mapFirebaseAuthExceptionCode(e.code)}');
-
       throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
-      print('Error signing in: $e');
+      throw Exception('Error signing in: $e');
     }
   }
 
@@ -115,12 +109,9 @@ class UserAuthService extends UserAuthRepo {
         await userDocRef.set(userData);
       }
     } on FirebaseAuthException catch (e) {
-      print(
-        'Error signing in with Google: ${mapFirebaseAuthExceptionCode(e.code)}',
-      );
       throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
-      print('Error signing in with Google: $e');
+      throw Exception('Error signing in with Google: $e');
     }
   }
 
@@ -136,10 +127,8 @@ class UserAuthService extends UserAuthRepo {
       // Send password reset email
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      print('Firebase Auth Error: ${mapFirebaseAuthExceptionCode(e.code)}');
       throw Exception(mapFirebaseAuthExceptionCode(e.code));
     } catch (e) {
-      print('Password Reset Error: $e');
       throw Exception("Failed to send password reset email. Please try again.");
     }
   }

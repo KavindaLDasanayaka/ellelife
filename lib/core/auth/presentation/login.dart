@@ -30,36 +30,40 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _showForgotPasswordDialog(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text("Reset Password"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Enter your email address and we'll send you a link to reset your password.",
-              style: TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 16),
-            CustomTextInputField(
-              controller: _passwordResetController,
-              iconData: Icons.email,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Please enter your email";
-                }
-                if (!RegExp(
-                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                ).hasMatch(value)) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              },
-              labelText: "Email",
-              obscureText: false,
-            ),
-          ],
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Enter your email address and we'll send you a link to reset your password.",
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              CustomTextInputField(
+                controller: _passwordResetController,
+                iconData: Icons.email,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter your email";
+                  }
+                  if (!RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                  ).hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
+                labelText: "Email",
+                obscureText: false,
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -99,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
               }
               return ElevatedButton(
                 onPressed: () {
-                  if (_passwordResetController.text.isNotEmpty) {
+                  if (formKey.currentState!.validate()) {
                     BlocProvider.of<UserLoginBloc>(context).add(
                       ForgotPasswordEvent(
                         email: _passwordResetController.text.trim(),
@@ -179,7 +183,9 @@ class _LoginPageState extends State<LoginPage> {
                                 if (value == null || value.isEmpty) {
                                   return "Please Enter your email!";
                                 }
-                                if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                                if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                ).hasMatch(value)) {
                                   return 'Please enter a valid email address';
                                 }
                                 return null;
@@ -193,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                               iconData: Icons.key,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return "Please Enter your Passowrd!";
+                                  return "Please Enter your Password!";
                                 }
                                 return null;
                               },
@@ -207,12 +213,14 @@ class _LoginPageState extends State<LoginPage> {
                               buttonColor: mainColor,
                               buttonTextColor: mainWhite,
                               onPressed: () {
-                                BlocProvider.of<UserLoginBloc>(context).add(
-                                  UserLogEvent(
-                                    userName: _emailController.text.trim(),
-                                    password: _passwordController.text.trim(),
-                                  ),
-                                );
+                                if (_formKey.currentState!.validate()) {
+                                  BlocProvider.of<UserLoginBloc>(context).add(
+                                    UserLogEvent(
+                                      userName: _emailController.text.trim(),
+                                      password: _passwordController.text.trim(),
+                                    ),
+                                  );
+                                }
                               },
                             ),
                             const SizedBox(height: 30),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/core/utils/colors.dart';
@@ -10,20 +11,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class TeamsScreen extends StatelessWidget {
+class TeamsScreen extends StatefulWidget {
   TeamsScreen({super.key});
 
+  @override
+  State<TeamsScreen> createState() => _TeamsScreenState();
+}
+
+class _TeamsScreenState extends State<TeamsScreen> {
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounceTimer;
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {}); // Trigger rebuild for suffix icon
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      BlocProvider.of<TeamsBloc>(context).add(SearchTeam(query: value));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Teams"),
+        title: const Text("Teams"),
         actions: [
           Row(
             children: [
-              Text("Add team"),
+              const Text("Add team"),
               IconButton(
                 onPressed: () {
                   BlocProvider.of<TeamRegisterBloc>(
@@ -34,7 +56,7 @@ class TeamsScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => TeamRegister()),
                   );
                 },
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
               ),
             ],
           ),
@@ -55,15 +77,23 @@ class TeamsScreen extends StatelessWidget {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
-
                   borderSide: BorderSide(width: 2, color: mainWhite),
                 ),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _searchController.clear();
+                          });
+                          BlocProvider.of<TeamsBloc>(
+                            context,
+                          ).add(TeamsInitEvent());
+                        },
+                      )
+                    : const Icon(Icons.search),
               ),
-              onChanged: (value) {
-                BlocProvider.of<TeamsBloc>(
-                  context,
-                ).add(SearchTeam(query: value));
-              },
+              onChanged: _onSearchChanged,
             ),
           ),
           BlocBuilder<TeamsBloc, TeamsState>(
@@ -71,6 +101,16 @@ class TeamsScreen extends StatelessWidget {
               if (state is SearchingTeams) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is SearchedTeams) {
+                if (state.filteredTeams.isEmpty) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                        "No teams found",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  );
+                }
                 return Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
@@ -86,10 +126,8 @@ class TeamsScreen extends StatelessWidget {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            BlocProvider.of<TeamsBloc>(
-                              context,
-                            ).add(TeamsInitEvent());
-                            (context).pushNamed(
+                            // Remove the unnecessary TeamsInitEvent call
+                            context.pushNamed(
                               RouteNames.singletTeam,
                               extra: team,
                             );
@@ -102,8 +140,11 @@ class TeamsScreen extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(50),
                                         child: CachedNetworkImage(
                                           imageUrl: team.teamPhoto,
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
                                           placeholder: (context, url) =>
-                                              const CircularProgressIndicator(), // while loading
+                                              const CircularProgressIndicator(),
                                           errorWidget: (context, url, error) =>
                                               const Icon(Icons.error),
                                         ),
@@ -123,7 +164,7 @@ class TeamsScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       team.teamName,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -145,6 +186,40 @@ class TeamsScreen extends StatelessWidget {
                         ),
                       );
                     },
+                  ),
+                );
+              } else if (state is SearchingTeamsError) {
+                return Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 48,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          state.message,
+                          style: TextStyle(fontSize: 16, color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Clear search and return to initial state
+                            setState(() {
+                              _searchController.clear();
+                            });
+                            BlocProvider.of<TeamsBloc>(
+                              context,
+                            ).add(TeamsInitEvent());
+                          },
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               } else if (state is TeamsInitial) {
@@ -188,11 +263,16 @@ class TeamsScreen extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(
                                               50,
                                             ),
-                                            child: Image.network(
-                                              team.teamPhoto,
-                                              fit: BoxFit.cover,
+                                            child: CachedNetworkImage(
+                                              imageUrl: team.teamPhoto,
                                               width: 50,
                                               height: 50,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
                                             ),
                                           )
                                         : ClipRRect(
@@ -213,7 +293,7 @@ class TeamsScreen extends StatelessWidget {
                                       children: [
                                         Text(
                                           team.teamName,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
