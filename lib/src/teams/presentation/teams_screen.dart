@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class TeamsScreen extends StatefulWidget {
-  TeamsScreen({super.key});
+  const TeamsScreen({super.key});
 
   @override
   State<TeamsScreen> createState() => _TeamsScreenState();

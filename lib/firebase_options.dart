@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '134210412744',
     projectId: 'ellelife-5dc60',
     storageBucket: 'ellelife-5dc60.firebasestorage.app',
-    iosBundleId: 'com.example.ellelife',
+    iosBundleId: 'com.elle.ellelife',
   );
 }

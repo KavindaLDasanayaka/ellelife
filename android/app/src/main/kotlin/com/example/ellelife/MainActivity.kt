@@ -1,4 +1,4 @@
-package com.example.ellelife
+package com.elle.ellelife
 
 import io.flutter.embedding.android.FlutterActivity
 

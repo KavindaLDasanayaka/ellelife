@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:134210412744:android:7e3fb42f405aff576005fd",
         "android_client_info": {
-          "package_name": "com.example.ellelife"
+          "package_name": "com.elle.ellelife"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "134210412744-vk4c3pvemkbhc8tr2dudhpv7jbra99pj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.ellelife",
+            "package_name": "com.elle.ellelife",
             "certificate_hash": "f1ba037fd19024b0a692e35568d7afdb8deb2d4c"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "134210412744-830tt08b4couvcokph4i6kadar9m5239.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.ellelife"
+                "bundle_id": "com.elle.ellelife"
               }
             }
           ]
