@@ -6,6 +6,10 @@ import 'package:ellelife/src/reels/presentation/reels.dart';
 import 'package:ellelife/src/teams/domain/entities/team.dart';
 import 'package:ellelife/src/teams/presentation/teams_screen.dart';
 import 'package:ellelife/src/teams/single_team_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ellelife/src/user/presentation/bloc/user_update_bloc.dart';
+import 'package:ellelife/src/user/domain/entities/user_model.dart';
+import 'package:ellelife/src/user/presentation/screens/edit_profile_page.dart';
 import 'package:ellelife/src/user/presentation/screens/register.dart';
 import 'package:ellelife/core/navigation/navigation_screen.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
@@ -97,6 +101,17 @@ final router = GoRouter(
       name: "/create",
       path: RouteNames.createPost,
       builder: (context, state) => CreatePost(),
+    ),
+    GoRoute(
+      path: "/edit-profile",
+      name: RouteNames.editProfile,
+      builder: (context, state) {
+        final UserModel user = state.extra as UserModel;
+        return BlocProvider(
+          create: (context) => UserUpdateBloc(),
+          child: EditProfilePage(user: user),
+        );
+      },
     ),
   ],
 );

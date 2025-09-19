@@ -43,9 +43,18 @@ class UserReposImpl extends UserRepos {
   }
 
   @override
-  Future<void> updateUser(String userId) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<void> updateUser(String userId, UserModel updatedUser) async {
+    try {
+      final DocumentReference docRef = _userCollection.doc(userId);
+      final updatedMap = updatedUser.toJson();
+      updatedMap['updatedAt'] = DateTime.now(); // Update timestamp
+      
+      await docRef.update(updatedMap);
+      print("User updated successfully: $userId");
+    } catch (error) {
+      print("Error updating user: $error");
+      throw Exception("Failed to update user: $error");
+    }
   }
 
   @override

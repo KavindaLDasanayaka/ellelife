@@ -7,6 +7,7 @@ class CustomTextInputField extends StatelessWidget {
   final IconData iconData;
   final String? Function(String?)? validator;
   final bool obscureText;
+  final bool enabled;
 
   const CustomTextInputField({
     super.key,
@@ -15,6 +16,7 @@ class CustomTextInputField extends StatelessWidget {
     required this.validator,
     required this.labelText,
     required this.obscureText,
+    this.enabled = true,
   });
 
   @override
@@ -26,13 +28,15 @@ class CustomTextInputField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       validator: validator,
+      enabled: enabled,
       decoration: InputDecoration(
         prefixIcon: Icon(iconData, size: 20),
         border: borderStyle,
         focusedBorder: borderStyle,
         enabledBorder: borderStyle,
+        disabledBorder: borderStyle,
         labelText: labelText,
-        labelStyle: TextStyle(color: mainWhite),
+        labelStyle: TextStyle(color: enabled ? mainWhite : Colors.grey),
         filled: true,
       ),
       obscureText: obscureText,
