@@ -2,6 +2,7 @@ import 'package:ellelife/core/Widgets/wrapper.dart';
 import 'package:ellelife/core/auth/presentation/login.dart';
 import 'package:ellelife/src/feed/domain/entities/post.dart';
 import 'package:ellelife/src/feed/presentation/screens/postpage.dart';
+import 'package:ellelife/src/reels/presentation/reels.dart';
 import 'package:ellelife/src/teams/domain/entities/team.dart';
 import 'package:ellelife/src/teams/presentation/teams_screen.dart';
 import 'package:ellelife/src/teams/single_team_page.dart';
@@ -46,9 +47,9 @@ final router = GoRouter(
           builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
-          name: "/create",
-          path: RouteNames.createPost,
-          builder: (context, state) => CreatePost(),
+          name: "/reels",
+          path: RouteNames.reels,
+          builder: (context, state) => ReelsPage(),
         ),
         GoRoute(
           name: "/teams",
@@ -91,6 +92,11 @@ final router = GoRouter(
         final Post post = state.extra as Post;
         return Postpage(post: post);
       },
+    ),
+    GoRoute(
+      name: "/create",
+      path: RouteNames.createPost,
+      builder: (context, state) => CreatePost(),
     ),
   ],
 );

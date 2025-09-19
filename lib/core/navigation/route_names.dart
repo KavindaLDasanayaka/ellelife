@@ -8,4 +8,5 @@ class RouteNames {
   static const String profile = "/profile";
   static const String singletTeam = "/singleteam";
   static const String singletPost = "/singlepost";
+  static const String reels = "/reels";
 }
