@@ -11,4 +11,5 @@ class RouteNames {
   static const String singletPost = "/singlepost";
   static const String editProfile = "/edit-profile";
   static const String singleReel = "/single-reel"; // Added new route
+  static const String editPost = "/edit-post"; // Added edit post route
 }

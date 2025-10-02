@@ -27,6 +27,33 @@ class _EditPostPageState extends State<EditPostPage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    super.initState();
+    _captionController.text = widget.postFromSelection.postCaption;
+    
+    // Initialize the PostCreateBloc with the post data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.postFromSelection.postImage.isNotEmpty) {
+        // If there's an image, we'll display it but not pre-select it
+        context.read<PostCreateBloc>().add(
+              MoodSelection(
+                mood: widget.postFromSelection.mood,
+                null, // No file selected initially
+              ),
+            );
+      } else {
+        // No image in the post
+        context.read<PostCreateBloc>().add(
+              MoodSelection(
+                mood: widget.postFromSelection.mood,
+                null,
+              ),
+            );
+      }
+    });
+  }
+
   //pick the image
   Future<void> _pickImage(ImageSource source, Mood mood) async {
     final picker = ImagePicker();
@@ -41,19 +68,13 @@ class _EditPostPageState extends State<EditPostPage> {
   Future<void> _updatePost(File? imageFile, Mood mood, String postId) async {
     BlocProvider.of<PosteditBloc>(context).add(
       UpdatePost(
-        caption: _captionController.text,
+        imageFile, // Pass the selected image file or null as the first positional parameter
         mood: mood,
-        imageFile,
+        caption: _captionController.text,
         postId: postId,
       ),
     );
     _captionController.clear();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _captionController.text = widget.postFromSelection.postCaption;
   }
 
   @override
@@ -76,6 +97,8 @@ class _EditPostPageState extends State<EditPostPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Post Edited Successfully")),
                     );
+                    // Navigate back to the previous screen
+                    Navigator.of(context).pop();
                   } else if (state is PostEditErrorState) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Error editing post")),
@@ -109,7 +132,7 @@ class _EditPostPageState extends State<EditPostPage> {
                         ),
                         const SizedBox(height: 20),
                         DropdownButton<Mood>(
-                          value: widget.postFromSelection.mood,
+                          value: state.mood,
                           items: Mood.values.map((Mood mood) {
                             return DropdownMenuItem(
                               value: mood,
@@ -130,14 +153,19 @@ class _EditPostPageState extends State<EditPostPage> {
                                     ? Image.network(state.imageFile!.path)
                                     : Image.file(state.imageFile!),
                               )
-                            : Text(
-                                "No Image Selected (Optional)",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: mainWhite,
-                                ),
-                              ),
+                            : widget.postFromSelection.postImage.isNotEmpty
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.network(widget.postFromSelection.postImage),
+                                  )
+                                : Text(
+                                    "No Image Selected (Optional)",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: mainWhite,
+                                    ),
+                                  ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,7 +199,7 @@ class _EditPostPageState extends State<EditPostPage> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _updatePost(
-                                state.imageFile,
+                                state.imageFile, // This will be null if no new image was selected
                                 state.mood,
                                 widget.postFromSelection.postId,
                               );

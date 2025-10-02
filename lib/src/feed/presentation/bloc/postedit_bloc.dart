@@ -21,18 +21,29 @@ class PosteditBloc extends Bloc<PosteditEvent, PosteditState> {
     try {
       String? imageUrl0;
       if (event.file != null) {
+        // Upload new image if provided
         final imageUrl = await PostStorage().uploadImageToCloudinary(
           imageFile: event.file!,
         );
         imageUrl0 = imageUrl!;
       } else {
-        // Set a default image URL when no image is provided
-        imageUrl0 = '';
+        // Preserve existing image when no new image is provided
+        // We'll get the existing post to preserve its image
+        final existingPost = await PostRepoImpl().getPostById(event.postId);
+        if (existingPost != null) {
+          imageUrl0 = existingPost.postImage;
+        } else {
+          // Fallback to empty string if we can't get the existing post
+          imageUrl0 = '';
+        }
       }
       final user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
         final userDetails = await UserReposImpl().getUserById(user.uid);
+        
+        // Get the existing post to preserve certain fields
+        final existingPost = await PostRepoImpl().getPostById(event.postId);
 
         if (userDetails != null) {
           final post = Post(
@@ -40,10 +51,10 @@ class PosteditBloc extends Bloc<PosteditEvent, PosteditState> {
             mood: event.mood,
             userId: userDetails.userId,
             username: userDetails.name,
-            likes: 0,
+            likes: existingPost?.likes ?? 0, // Preserve likes from existing post
             postId: event.postId,
-            datePublished: DateTime.now(),
-            postImage: imageUrl0, // This can now be an empty string
+            datePublished: existingPost?.datePublished ?? DateTime.now(), // Preserve date from existing post
+            postImage: imageUrl0,
             profImage: userDetails.imageUrl,
           );
 

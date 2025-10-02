@@ -7,6 +7,8 @@ import 'package:ellelife/src/feed/data/post_storage.dart';
 import 'package:ellelife/src/feed/domain/entities/post.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ellelife/core/navigation/route_names.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -208,19 +210,22 @@ class _PostWidgetState extends State<PostWidget> {
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shrinkWrap: true,
                             children: [
-                              // _buildDialogOption(
-                              //   context: context,
-                              //   icon: Icons.edit,
-                              //   text: "Edit",
-                              //   onTap: () {},
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(8.0),
-                              //   child: Divider(
-                              //     // ignore: deprecated_member_use
-                              //     color: mainWhite.withOpacity(0.5),
-                              //   ),
-                              // ),
+                              _buildDialogOption(
+                                context: context,
+                                icon: Icons.edit,
+                                text: "Edit",
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  context.pushNamed(RouteNames.editPost, extra: widget.post);
+                                },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Divider(
+                                  // ignore: deprecated_member_use
+                                  color: mainWhite.withOpacity(0.5),
+                                ),
+                              ),
                               _buildDialogOption(
                                 context: context,
                                 icon: Icons.delete,

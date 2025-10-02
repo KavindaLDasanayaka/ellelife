@@ -18,9 +18,16 @@ import 'package:ellelife/src/feed/presentation/screens/reels_page.dart';
 import 'package:ellelife/src/feed/presentation/screens/create_reel_page.dart';
 import 'package:ellelife/src/feed/domain/entities/reel.dart';
 import 'package:ellelife/src/feed/presentation/screens/single_reel_page.dart';
+// Added import for edit post functionality
+import 'package:ellelife/src/feed/presentation/screens/edit_post.dart';
+import 'package:ellelife/core/utils/mood.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ellelife/src/feed/presentation/bloc/postedit_bloc.dart';
+import 'package:ellelife/src/feed/presentation/bloc/post_create_bloc.dart';
+import 'dart:io';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -127,6 +134,21 @@ final router = GoRouter(
       builder: (context, state) {
         final Reel reel = state.extra as Reel;
         return SingleReelPage(reel: reel);
+      },
+    ),
+    // Added route for edit post page
+    GoRoute(
+      path: "/edit-post",
+      name: RouteNames.editPost,
+      builder: (context, state) {
+        final Post post = state.extra as Post;
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => PosteditBloc()),
+            BlocProvider(create: (context) => PostCreateBloc()),
+          ],
+          child: EditPostPage(postFromSelection: post),
+        );
       },
     ),
   ],

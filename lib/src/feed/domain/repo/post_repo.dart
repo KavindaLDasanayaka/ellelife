@@ -23,4 +23,7 @@ abstract class PostRepo {
   Future<List<String>> getAllUserPostImages({required String userId});
 
   Future<int> getUserPostsCount(String userId);
+  
+  // Add method to get a post by ID
+  Future<Post?> getPostById(String postId);
 }

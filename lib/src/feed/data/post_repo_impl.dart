@@ -148,6 +148,20 @@ class PostRepoImpl extends PostRepo {
     }
   }
 
+  // Add method to get a post by ID
+  Future<Post?> getPostById(String postId) async {
+    try {
+      final DocumentSnapshot doc = await _postsCollection.doc(postId).get();
+      if (doc.exists) {
+        return Post.fromJson(doc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (err) {
+      print("Error getting post by ID: $err");
+      return null;
+    }
+  }
+
   @override
   Future<void> updatePost(Post post) async {
     try {

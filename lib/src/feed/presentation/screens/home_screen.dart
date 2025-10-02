@@ -29,11 +29,24 @@ class HomeScreen extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.4,
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.white),
-            onPressed: () {
-              context.pushNamed(RouteNames.createPost);
-            },
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.add_circle_outline, color: Colors.white),
+                onPressed: () {
+                  context.pushNamed(RouteNames.createPost);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  "Add Post",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                onPressed: () {
+                  context.pushNamed(RouteNames.createPost);
+                },
+              ),
+            ],
           ),
         ],
       ),
