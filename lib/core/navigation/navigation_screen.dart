@@ -31,7 +31,7 @@ class NavigationScreen extends StatelessWidget {
             case 0:
               context.go(RouteNames.home);
             case 1:
-              context.go(RouteNames.reels);
+              context.go(RouteNames.createPost);
             case 2:
               context.go(RouteNames.teams);
             case 3:

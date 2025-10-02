@@ -5,9 +5,7 @@ import 'package:ellelife/core/utils/colors.dart';
 import 'package:ellelife/core/utils/constants.dart';
 import 'package:ellelife/src/user/data/user_repos_impl.dart';
 import 'package:ellelife/src/user/domain/entities/user_model.dart';
-import 'package:ellelife/src/user/presentation/bloc/user_update_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -65,86 +63,91 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserUpdateBloc(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Profile")),
-        body: FutureBuilder<UserModel?>(
-          future: _userFuture,
-          builder: (context, snapshot) {
-            if (_isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (_hasError) {
-              return const Center(child: Text('Error loading profile'));
-            }
-            final user = snapshot.data;
-
-            if (user == null) {
-              return const Center(child: Text('User not found'));
-            }
-
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 50),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: user.imageUrl.isNotEmpty
-                          ? NetworkImage(user.imageUrl)
-                          : const NetworkImage(profileImage) as ImageProvider,
-                    ),
-                    const SizedBox(height: 16),
-                    // User Name
-                    Text(
-                      user.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // User Bio
-                    Text(
-                      user.teamName,
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      textAlign: TextAlign.center,
-                    ),
-
-                    const SizedBox(height: 20),
-                    
-                    // Edit Profile Button
-                    CustomButton(
-                      buttonText: "Edit Profile",
-                      width: double.infinity,
-                      buttonColor: Colors.blue,
-                      buttonTextColor: mainWhite,
-                      onPressed: () {
-                        context.pushNamed(RouteNames.editProfile, extra: user);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    // Logout Button
-                    CustomButton(
-                      buttonText: "Logout",
-                      width: double.infinity,
-                      buttonColor: mainColor,
-                      buttonTextColor: mainWhite,
-                      onPressed: () {
-                        _signOut(context);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Profile"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () async {
+              final user = await _userFuture;
+              if (user != null) {
+                context.pushNamed(RouteNames.editProfile, extra: user);
+              }
+            },
+          ),
+        ],
       ),
+      body: FutureBuilder<UserModel?>(
+        future: _userFuture,
+        builder: (context, snapshot) {
+          if (_isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (_hasError) {
+            return const Center(child: Text('Error loading profile'));
+          }
+          final user = snapshot.data;
+
+          if (user == null) {
+            return const Center(child: Text('User not found'));
+          }
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 50),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: user.imageUrl.isNotEmpty
+                        ? NetworkImage(user.imageUrl)
+                        : const NetworkImage(profileImage) as ImageProvider,
+                  ),
+                  const SizedBox(height: 16),
+                  // User Name
+                  Text(
+                    user.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // User Bio
+                  Text(
+                    user.teamName,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 20),
+                  CustomButton(
+                    buttonText: "Logout",
+                    width: double.infinity,
+                    buttonColor: mainColor,
+                    buttonTextColor: mainWhite,
+                    onPressed: () {
+                      _signOut(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      // body: Center(
+      //   child: TextButton(
+      //     onPressed: () {
+      //       UserAuthService().signOut();
+      //       (context).goNamed(RouteNames.login);
+      //     },
+      //     child: Text("Logout"),
+      //   ),
+      // ),
     );
   }
 }

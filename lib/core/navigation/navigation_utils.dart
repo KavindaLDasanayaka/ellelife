@@ -5,7 +5,11 @@ import 'package:ming_cute_icons/ming_cute_icons.dart';
 abstract class NavigationUtils {
   static final icons = [
     (MingCuteIcons.mgc_home_3_line, MingCuteIcons.mgc_home_3_fill, "Home"),
-    (MingCuteIcons.mgc_video_line, MingCuteIcons.mgc_video_fill, "Reels"),
+    (
+      MingCuteIcons.mgc_add_circle_line,
+      MingCuteIcons.mgc_add_circle_fill,
+      "Add Post",
+    ),
 
     (MingCuteIcons.mgc_group_2_line, MingCuteIcons.mgc_group_2_fill, "Teams"),
     (MingCuteIcons.mgc_user_5_line, MingCuteIcons.mgc_user_5_fill, "Profile"),
@@ -14,7 +18,7 @@ abstract class NavigationUtils {
   static int activeIndex(GoRouterState state) {
     return switch (state.fullPath) {
       RouteNames.home => 0,
-      RouteNames.reels => 1,
+      RouteNames.createPost => 1,
       RouteNames.teams => 2,
       RouteNames.profile => 3,
       _ => 0,

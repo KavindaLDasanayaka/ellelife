@@ -2,20 +2,17 @@ import 'package:ellelife/core/Widgets/wrapper.dart';
 import 'package:ellelife/core/auth/presentation/login.dart';
 import 'package:ellelife/src/feed/domain/entities/post.dart';
 import 'package:ellelife/src/feed/presentation/screens/postpage.dart';
-import 'package:ellelife/src/reels/presentation/reels.dart';
 import 'package:ellelife/src/teams/domain/entities/team.dart';
 import 'package:ellelife/src/teams/presentation/teams_screen.dart';
 import 'package:ellelife/src/teams/single_team_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ellelife/src/user/presentation/bloc/user_update_bloc.dart';
-import 'package:ellelife/src/user/domain/entities/user_model.dart';
-import 'package:ellelife/src/user/presentation/screens/edit_profile_page.dart';
 import 'package:ellelife/src/user/presentation/screens/register.dart';
 import 'package:ellelife/core/navigation/navigation_screen.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
 import 'package:ellelife/src/feed/presentation/screens/create_post.dart';
 import 'package:ellelife/src/feed/presentation/screens/home_screen.dart';
 import 'package:ellelife/src/user/presentation/screens/profile_page.dart';
+import 'package:ellelife/src/user/presentation/screens/edit_profile_page.dart';
+import 'package:ellelife/src/user/domain/entities/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,9 +48,9 @@ final router = GoRouter(
           builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
-          name: "/reels",
-          path: RouteNames.reels,
-          builder: (context, state) => ReelsPage(),
+          name: "/create",
+          path: RouteNames.createPost,
+          builder: (context, state) => CreatePost(),
         ),
         GoRoute(
           name: "/teams",
@@ -64,6 +61,14 @@ final router = GoRouter(
           name: "/profile",
           path: RouteNames.profile,
           builder: (context, state) => const ProfilePage(),
+        ),
+        GoRoute(
+          name: "/edit-profile",
+          path: RouteNames.editProfile,
+          builder: (context, state) {
+            final UserModel user = state.extra as UserModel;
+            return EditProfilePage(user: user);
+          },
         ),
       ],
     ),
@@ -95,22 +100,6 @@ final router = GoRouter(
       builder: (context, state) {
         final Post post = state.extra as Post;
         return Postpage(post: post);
-      },
-    ),
-    GoRoute(
-      name: "/create",
-      path: RouteNames.createPost,
-      builder: (context, state) => CreatePost(),
-    ),
-    GoRoute(
-      path: "/edit-profile",
-      name: RouteNames.editProfile,
-      builder: (context, state) {
-        final UserModel user = state.extra as UserModel;
-        return BlocProvider(
-          create: (context) => UserUpdateBloc(),
-          child: EditProfilePage(user: user),
-        );
       },
     ),
   ],

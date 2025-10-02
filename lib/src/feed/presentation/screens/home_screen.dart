@@ -28,14 +28,6 @@ class HomeScreen extends StatelessWidget {
           "assets/logo.png",
           width: MediaQuery.of(context).size.width * 0.4,
         ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              context.pushNamed(RouteNames.createPost);
-            },
-            child: Row(children: [Icon(Icons.add), Text("Add Post")]),
-          ),
-        ],
       ),
       body: StreamBuilder(
         stream: PostRepoImpl().getPostStream(),
