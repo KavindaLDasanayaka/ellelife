@@ -71,6 +71,10 @@ class _CreatePostState extends State<CreatePost> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Posts Created Successfully")),
                     );
+                  } else if (state is PostCreateError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Error: ${state.message}")),
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -119,7 +123,7 @@ class _CreatePostState extends State<CreatePost> {
                                       : Image.file(state.imageFile!),
                                 )
                               : Text(
-                                  "No Image Selected",
+                                  "No Image Selected (Optional)",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,

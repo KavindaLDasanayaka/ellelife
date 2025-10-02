@@ -31,7 +31,8 @@ class NavigationScreen extends StatelessWidget {
             case 0:
               context.go(RouteNames.home);
             case 1:
-              context.go(RouteNames.createPost);
+              // Navigate to a new reels route (we'll need to add this)
+              context.go('/reels');
             case 2:
               context.go(RouteNames.teams);
             case 3:

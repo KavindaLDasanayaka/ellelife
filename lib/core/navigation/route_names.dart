@@ -4,9 +4,11 @@ class RouteNames {
   static const String login = "/login";
   static const String register = "/register";
   static const String createPost = "/create";
+  static const String createReel = "/create-reel"; // Added new route
   static const String teams = "/teams";
   static const String profile = "/profile";
   static const String singletTeam = "/singleteam";
   static const String singletPost = "/singlepost";
   static const String editProfile = "/edit-profile";
+  static const String singleReel = "/single-reel"; // Added new route
 }

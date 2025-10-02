@@ -1,6 +1,7 @@
 import 'package:ellelife/core/Widgets/wrapper.dart';
 import 'package:ellelife/core/auth/presentation/login.dart';
 import 'package:ellelife/src/feed/domain/entities/post.dart';
+import 'package:ellelife/src/feed/presentation/screens/create_post.dart';
 import 'package:ellelife/src/feed/presentation/screens/postpage.dart';
 import 'package:ellelife/src/teams/domain/entities/team.dart';
 import 'package:ellelife/src/teams/presentation/teams_screen.dart';
@@ -8,11 +9,16 @@ import 'package:ellelife/src/teams/single_team_page.dart';
 import 'package:ellelife/src/user/presentation/screens/register.dart';
 import 'package:ellelife/core/navigation/navigation_screen.dart';
 import 'package:ellelife/core/navigation/route_names.dart';
-import 'package:ellelife/src/feed/presentation/screens/create_post.dart';
 import 'package:ellelife/src/feed/presentation/screens/home_screen.dart';
 import 'package:ellelife/src/user/presentation/screens/profile_page.dart';
 import 'package:ellelife/src/user/presentation/screens/edit_profile_page.dart';
 import 'package:ellelife/src/user/domain/entities/user_model.dart';
+// Added imports for reels functionality
+import 'package:ellelife/src/feed/presentation/screens/reels_page.dart';
+import 'package:ellelife/src/feed/presentation/screens/create_reel_page.dart';
+import 'package:ellelife/src/feed/domain/entities/reel.dart';
+import 'package:ellelife/src/feed/presentation/screens/single_reel_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -36,6 +42,13 @@ final router = GoRouter(
         return Wrapper();
       },
     ),
+    GoRoute(
+      path: "/create",
+      name: RouteNames.createPost,
+      builder: (context, state) {
+        return CreatePost();
+      },
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
@@ -48,9 +61,14 @@ final router = GoRouter(
           builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
-          name: "/create",
-          path: RouteNames.createPost,
-          builder: (context, state) => CreatePost(),
+          path: "/reels", // Added reels route
+          name: "reels",
+          builder: (context, state) => const ReelsPage(),
+        ),
+        GoRoute(
+          name: "/create-reel", // Changed from "/create" to "/create-reel"
+          path: RouteNames.createReel,
+          builder: (context, state) => CreateReelPage(),
         ),
         GoRoute(
           name: "/teams",
@@ -100,6 +118,15 @@ final router = GoRouter(
       builder: (context, state) {
         final Post post = state.extra as Post;
         return Postpage(post: post);
+      },
+    ),
+    // Added route for single reel page
+    GoRoute(
+      path: "/single-reel",
+      name: RouteNames.singleReel,
+      builder: (context, state) {
+        final Reel reel = state.extra as Reel;
+        return SingleReelPage(reel: reel);
       },
     ),
   ],

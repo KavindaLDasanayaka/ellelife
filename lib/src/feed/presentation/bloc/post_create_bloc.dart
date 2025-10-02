@@ -38,6 +38,9 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
           imageFile: event.file!,
         );
         imageUrl0 = imageUrl!;
+      } else {
+        // Set a default image URL when no image is provided
+        imageUrl0 = '';
       }
       final user = FirebaseAuth.instance.currentUser;
 
@@ -53,7 +56,7 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
             likes: 0,
             postId: "",
             datePublished: DateTime.now(),
-            postImage: imageUrl0!,
+            postImage: imageUrl0, // This can now be an empty string
             profImage: userDetails.imageUrl,
           );
 
@@ -64,7 +67,7 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
       }
     } catch (err) {
       print("error in saving post ui:$err");
-      throw Exception("Connection Error!");
+      emit(PostCreateError(message: err.toString()));
     }
   }
 }
