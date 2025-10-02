@@ -41,7 +41,7 @@ class PosteditBloc extends Bloc<PosteditEvent, PosteditState> {
 
       if (user != null) {
         final userDetails = await UserReposImpl().getUserById(user.uid);
-        
+
         // Get the existing post to preserve certain fields
         final existingPost = await PostRepoImpl().getPostById(event.postId);
 
@@ -51,9 +51,12 @@ class PosteditBloc extends Bloc<PosteditEvent, PosteditState> {
             mood: event.mood,
             userId: userDetails.userId,
             username: userDetails.name,
-            likes: existingPost?.likes ?? 0, // Preserve likes from existing post
+            likes:
+                existingPost?.likes ?? 0, // Preserve likes from existing post
             postId: event.postId,
-            datePublished: existingPost?.datePublished ?? DateTime.now(), // Preserve date from existing post
+            datePublished:
+                existingPost?.datePublished ??
+                DateTime.now(), // Preserve date from existing post
             postImage: imageUrl0,
             profImage: userDetails.imageUrl,
           );

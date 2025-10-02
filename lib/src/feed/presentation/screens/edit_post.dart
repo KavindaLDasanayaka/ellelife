@@ -31,25 +31,22 @@ class _EditPostPageState extends State<EditPostPage> {
   void initState() {
     super.initState();
     _captionController.text = widget.postFromSelection.postCaption;
-    
+
     // Initialize the PostCreateBloc with the post data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.postFromSelection.postImage.isNotEmpty) {
         // If there's an image, we'll display it but not pre-select it
         context.read<PostCreateBloc>().add(
-              MoodSelection(
-                mood: widget.postFromSelection.mood,
-                null, // No file selected initially
-              ),
-            );
+          MoodSelection(
+            mood: widget.postFromSelection.mood,
+            null, // No file selected initially
+          ),
+        );
       } else {
         // No image in the post
         context.read<PostCreateBloc>().add(
-              MoodSelection(
-                mood: widget.postFromSelection.mood,
-                null,
-              ),
-            );
+          MoodSelection(mood: widget.postFromSelection.mood, null),
+        );
       }
     });
   }
@@ -154,18 +151,20 @@ class _EditPostPageState extends State<EditPostPage> {
                                     : Image.file(state.imageFile!),
                               )
                             : widget.postFromSelection.postImage.isNotEmpty
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.network(widget.postFromSelection.postImage),
-                                  )
-                                : Text(
-                                    "No Image Selected (Optional)",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: mainWhite,
-                                    ),
-                                  ),
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  widget.postFromSelection.postImage,
+                                ),
+                              )
+                            : Text(
+                                "No Image Selected (Optional)",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: mainWhite,
+                                ),
+                              ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,7 +198,8 @@ class _EditPostPageState extends State<EditPostPage> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _updatePost(
-                                state.imageFile, // This will be null if no new image was selected
+                                state
+                                    .imageFile, // This will be null if no new image was selected
                                 state.mood,
                                 widget.postFromSelection.postId,
                               );

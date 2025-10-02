@@ -4,10 +4,13 @@ import 'package:ellelife/src/feed/domain/entities/reel.dart';
 class ReelsRepoImpl {
   final CollectionReference _reelsCollection = FirebaseFirestore.instance
       .collection('reels');
-  
+
   final Query _orderedReelsQuery = FirebaseFirestore.instance
       .collection('reels')
-      .orderBy('createdAt', descending: true); // Order by creation date, newest first
+      .orderBy(
+        'createdAt',
+        descending: true,
+      ); // Order by creation date, newest first
 
   // Get all reels ordered from latest to oldest
   Stream<List<Reel>> getReelsStream() {

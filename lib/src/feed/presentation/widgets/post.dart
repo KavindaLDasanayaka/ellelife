@@ -216,7 +216,10 @@ class _PostWidgetState extends State<PostWidget> {
                                 text: "Edit",
                                 onTap: () {
                                   Navigator.of(context).pop();
-                                  context.pushNamed(RouteNames.editPost, extra: widget.post);
+                                  context.pushNamed(
+                                    RouteNames.editPost,
+                                    extra: widget.post,
+                                  );
                                 },
                               ),
                               Padding(
